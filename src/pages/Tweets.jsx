@@ -5,6 +5,7 @@ import { useTweets } from "../hooks/useTweets";
 
 const Tweets = () => {
   const { tweets, loading, error } = useTweets();
+
   console.log(tweets);
 
   return (

@@ -10,9 +10,24 @@ import {
 import Logo from "../../images/Logo.png";
 import Dymka from "../../images/dymka.png";
 import Boy from "../../images/Boy.png";
+import { useState } from "react";
 
 const TweetsItem = ({ tweet }) => {
   const { tweets, followers } = tweet;
+  // const formattedFollowerCount = (followerCount + 100500).toLocaleString();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(followers);
+
+  const handleClickFollow = () => {
+    if (isFollowing) {
+      setIsFollowing(false);
+      setFollowerCount(followerCount - 1);
+    } else {
+      setIsFollowing(true);
+      setFollowerCount(followerCount + 1);
+    }
+  };
+
   return (
     <TweetItem>
       <LogoImg src={Logo} alt="GO-IT" />
@@ -24,8 +39,12 @@ const TweetsItem = ({ tweet }) => {
         <img src={Boy} alt="Boy image" />
       </BoyImg>
 
-      <Button>Follow</Button>
-      <TweetsCount>{followers} FOLLOWERS</TweetsCount>
+      <Button onClick={handleClickFollow} isFollowing={isFollowing}>
+        {isFollowing ? "Following" : "Follow"}
+      </Button>
+      <TweetsCount>
+        {followerCount.toLocaleString("en-US")} FOLLOWERS
+      </TweetsCount>
       <TweetsCount>{tweets} TWEETS</TweetsCount>
     </TweetItem>
   );

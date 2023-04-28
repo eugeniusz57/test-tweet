@@ -10,7 +10,7 @@ export function useTweets() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://63976edf77359127a0376fe7.mockapi.io/api/tweets?&page=1&limit=3"
+        "https://63976edf77359127a0376fe7.mockapi.io/api/tweets?&page=1&limit=9"
       );
       setTweets(res.data);
       setLoading(false);
