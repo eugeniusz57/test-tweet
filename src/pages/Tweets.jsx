@@ -3,8 +3,14 @@ import { Section } from "../components/Section/Section.styled";
 import TweetsItem from "../components/TweetsItem/TweetsItem";
 import { TweetList } from "../components/TweetsItem/TweetsItem.styled";
 import { useEffect } from "react";
-import { useTweets } from "../hooks/useTweets";
-import { GoHome } from "./Tweets.styled";
+import {
+  ArrowGoHome,
+  ContainerLoadMore,
+  GoHome,
+  SpanGoHome,
+} from "./Tweets.styled";
+import Button from "../components/Button/Button";
+import { getTweets } from "../APIService/getTweets";
 
 const Tweets = () => {
   const tweet = [
@@ -81,20 +87,46 @@ const Tweets = () => {
       id: "8",
     },
   ];
-
-  const { tweetItems, loading, error } = useTweets();
-
   const tweetFolow = tweet.map((item) => {
     return { ...item, following: false };
   });
+  const [tweetsArray, setTweetsArray] = useState(tweetFolow);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [tweetItems, setTweetItems] = useState("");
 
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("tweets"));
+    if (!storedUsers) {
+      setTweetsArray(tweetFolow);
+      return;
+    }
     setTweetsArray(storedUsers);
-  }, []);
+  }, [tweetFolow]);
 
-  const [tweetsArray, setTweetsArray] = useState(tweetFolow);
-  console.log("tweetsArray=", tweetsArray);
+  useEffect(() => {
+    const renderTwetsItem = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getTweets(page);
+        setTweetItems(data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }, 500);
+      }
+    };
+    renderTwetsItem();
+  }, [page]);
+
+  console.log("ggetTweets", tweetItems);
 
   const handleClickFollow = (name) => {
     const updatedTweets = tweetsArray.map((item) => {
@@ -124,7 +156,10 @@ const Tweets = () => {
   return (
     <>
       <Section>
-        <GoHome to={"/"}>Go Home</GoHome>
+        <GoHome to={"/"}>
+          <ArrowGoHome />
+          <SpanGoHome> Go Home</SpanGoHome>
+        </GoHome>
         <TweetList>
           {tweetsArray.length > 0 &&
             tweetsArray.map((item) => (
@@ -135,6 +170,9 @@ const Tweets = () => {
               />
             ))}
         </TweetList>
+        <ContainerLoadMore>
+          <Button>Load more</Button>
+        </ContainerLoadMore>
       </Section>
     </>
   );
