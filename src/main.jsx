@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="https://tiny-conkies-b602b0.netlify.app/">
       <App />
     </BrowserRouter>
   </React.StrictMode>

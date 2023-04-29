@@ -100,7 +100,7 @@ const Tweets = () => {
             ))}
         </TweetList>
         <ContainerLoadMore>
-          <Button onClick={handleIncrementPage}>Next</Button>
+          <Button onClick={handleIncrementPage}>Load More</Button>
         </ContainerLoadMore>
       </Section>
     </>
