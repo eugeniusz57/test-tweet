@@ -11,6 +11,7 @@ import {
 } from "./Tweets.styled";
 import Button from "../components/Button/Button";
 import { getTweets } from "../APIService/getTweets";
+import { Loader } from "../components/Loader/Loader";
 
 const Tweets = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -80,6 +81,10 @@ const Tweets = () => {
   const handleIncrementPage = () => {
     setPage((prevState) => prevState + 1);
     localStorage.setItem("page", JSON.stringify(page));
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -89,6 +94,8 @@ const Tweets = () => {
           <ArrowGoHome />
           <SpanGoHome> Go Home</SpanGoHome>
         </GoHome>
+        {error && <p>Somthing was wrong, try again later...</p>}
+
         <TweetList>
           {tweetItems.length > 0 &&
             tweetItems.map((item) => (
@@ -99,9 +106,20 @@ const Tweets = () => {
               />
             ))}
         </TweetList>
-        <ContainerLoadMore>
-          <Button onClick={handleIncrementPage}>Load More</Button>
-        </ContainerLoadMore>
+
+        {tweetItems.length > 0 && (
+          <ContainerLoadMore>
+            <Button onClick={handleIncrementPage}>
+              {isLoading ? (
+                <>
+                  <Loader />
+                </>
+              ) : (
+                "Load More"
+              )}
+            </Button>
+          </ContainerLoadMore>
+        )}
       </Section>
     </>
   );

@@ -1,20 +1,20 @@
 import { Route, Routes } from "react-router-dom";
-import { NavBar } from "./components/NavBar/NavBar";
+
 import Home from "./pages/Home";
 import Tweets from "./pages/Tweets";
-import { Container } from "./components/Container/Container";
+
+import Layout from "./components/Layout/Layout.jsx";
 
 function App() {
   return (
     <>
-      <NavBar />
-      <Container>
-        <Routes>
-          <Route path="/" element={<Home />} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
           <Route path="/tweets" element={<Tweets />} />
           <Route path="*" element={<Home />} />
-        </Routes>
-      </Container>
+        </Route>
+      </Routes>
     </>
   );
 }
