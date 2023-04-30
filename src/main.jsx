@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter basename="https://golden-nougat-dd8985.netlify.app/">
+    <BrowserRouter basename="/golden-nougat-dd8985.netlify.app/">
       <App />
     </BrowserRouter>
   </React.StrictMode>
