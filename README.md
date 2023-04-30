@@ -10,3 +10,17 @@ manner using React components. The project includes various features
 such as filtering and sorting data, dynamic routing. It is designed to
 be scalable and maintainable, with a modular architecture that promotes
 code reusability.
+
+Installation
+
+---
+
+Clone the repository.
+Install the dependencies using npm install.
+Start the development server using npm run dev.
+Deployment
+
+---
+
+Run npm run build to create a production-ready build.
+Deploy the contents of the dist directory to your web server.
