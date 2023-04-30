@@ -1,4 +1,4 @@
-# test-tweet
+**# test-tweet**
 
 This is a web application built with React, a popular JavaScript library
 for building user interfaces. The application uses Styled Components, a
@@ -11,7 +11,7 @@ such as filtering and sorting data, dynamic routing. It is designed to
 be scalable and maintainable, with a modular architecture that promotes
 code reusability.
 
-Installation
+**Installation**
 
 ---
 
@@ -21,7 +21,7 @@ Install the dependencies using **npm install**.
 
 Start the development server using **npm run dev**.
 
-Deployment
+**Deployment**
 
 ---
 
