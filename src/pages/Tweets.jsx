@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Section } from "../components/Section/Section.styled";
 import TweetsItem from "../components/TweetsItem/TweetsItem";
 import { TweetList } from "../components/TweetsItem/TweetsItem.styled";
@@ -12,6 +12,7 @@ import {
 import Button from "../components/Button/Button";
 import { getTweets } from "../APIService/getTweets";
 import { Loader } from "../components/Loader/Loader";
+import Filter from "../components/Filter/Filter";
 
 const Tweets = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,6 +91,29 @@ const Tweets = () => {
     localStorage.setItem("page", JSON.stringify(page));
   };
 
+  const filteredTweets = (value) => {
+    if (value === "show all") {
+      return tweetItems;
+    }
+    if (value === "follow") {
+      return tweetItems.filter((tweet) => tweet.following === false);
+    }
+    if (value === "following") {
+      return tweetItems.filter((tweet) => tweet.following === true);
+    }
+  };
+  const FilterTweets = useMemo(() => {
+    switch (filter) {
+      case "follow":
+        return tweetItems.filter((item) => item.following === false);
+      case "following":
+        return tweetItems.filter((item) => item.following === true);
+      default:
+        return tweetItems;
+    }
+  }, [tweetItems, filter]);
+
+  console.log(filteredTweets);
   return (
     <>
       <Section>
@@ -98,20 +122,24 @@ const Tweets = () => {
           <SpanGoHome> Go Home</SpanGoHome>
         </GoHome>
         {error && <p>Somthing was wrong, try again later...</p>}
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="show all">Show all</option>
-          <option value="follow">Follow</option>
-          <option value="following">Following</option>
-        </select>
+        <Filter
+          value={filter}
+          onChange={(e) => {
+            setFilter(e.target.value);
+          }}
+        />
         <TweetList>
-          {tweetItems.length > 0 &&
-            tweetItems.map((item) => (
+          {FilterTweets.length > 0 ? (
+            FilterTweets.map((item) => (
               <TweetsItem
                 key={item.id}
                 tweet={item}
                 onClick={() => handleClickFollow(item.name)}
               />
-            ))}
+            ))
+          ) : (
+            <p> You do not have ani tweets </p>
+          )}
         </TweetList>
 
         {tweetItems.length > 0 && (
