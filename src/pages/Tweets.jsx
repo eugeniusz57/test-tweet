@@ -25,6 +25,7 @@ const Tweets = () => {
   const [tweetItems, setTweetItems] = useState(
     JSON.parse(localStorage.getItem("tweets")) || []
   );
+  const [filter, setFilter] = useState("show all");
 
   useEffect(() => {
     const renderTwetsItem = async () => {
@@ -33,26 +34,33 @@ const Tweets = () => {
 
         const storedUsers = await JSON.parse(localStorage.getItem("tweets"));
         if (storedUsers && page === prevPage) {
-          setTweetItems(storedUsers);
           localStorage.setItem("page", JSON.stringify(page));
           localStorage.setItem("prevPage", JSON.stringify(prevPage));
           return;
         }
         const data = await getTweets(page);
-        const tweetFolow = data.map((item) => {
+        const tweetFolow = await data.map((item) => {
           return { ...item, following: false };
         });
-        setTweetItems(tweetFolow);
-        localStorage.setItem("tweets", JSON.stringify(tweetFolow));
+        setTweetItems((prev) => {
+          return page === 1 ? [...tweetFolow] : [...prev, ...tweetFolow];
+        });
+
+        setPrevPage(page);
       } catch (error) {
         setError(error);
       } finally {
         setIsLoading(false);
-        setPrevPage(page);
+        localStorage.setItem("page", JSON.stringify(page));
+        localStorage.setItem("prevPage", JSON.stringify(prevPage));
       }
     };
     renderTwetsItem();
-  }, [page]);
+  }, [page, prevPage]);
+
+  useEffect(() => {
+    localStorage.setItem("tweets", JSON.stringify(tweetItems));
+  }, [tweetItems]);
 
   const handleClickFollow = (name) => {
     const updatedTweets = tweetItems.map((item) => {
@@ -75,16 +83,11 @@ const Tweets = () => {
       }
     });
     setTweetItems(updatedTweets);
-    localStorage.setItem("tweets", JSON.stringify(updatedTweets));
   };
 
   const handleIncrementPage = () => {
     setPage((prevState) => prevState + 1);
     localStorage.setItem("page", JSON.stringify(page));
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   };
 
   return (
@@ -95,7 +98,11 @@ const Tweets = () => {
           <SpanGoHome> Go Home</SpanGoHome>
         </GoHome>
         {error && <p>Somthing was wrong, try again later...</p>}
-
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="show all">Show all</option>
+          <option value="follow">Follow</option>
+          <option value="following">Following</option>
+        </select>
         <TweetList>
           {tweetItems.length > 0 &&
             tweetItems.map((item) => (
