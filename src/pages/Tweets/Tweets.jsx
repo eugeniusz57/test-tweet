@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { Section } from "../components/Section/Section.styled";
-import TweetsItem from "../components/TweetsItem/TweetsItem";
-import { TweetList } from "../components/TweetsItem/TweetsItem.styled";
+import { Section } from "../../components/Section/Section.styled";
+import TweetsItem from "../../components/TweetsItem/TweetsItem";
+import { TweetList } from "../../components/TweetsItem/TweetsItem.styled";
 import { useEffect } from "react";
 import {
   ArrowGoHome,
@@ -9,10 +9,10 @@ import {
   GoHome,
   SpanGoHome,
 } from "./Tweets.styled";
-import Button from "../components/Button/Button";
-import { getTweets } from "../APIService/getTweets";
-import { Loader } from "../components/Loader/Loader";
-import Filter from "../components/Filter/Filter";
+import Button from "../../components/Button/Button";
+import { getTweets } from "../../APIService/getTweets";
+import { Loader } from "../../components/Loader/Loader";
+import Filter from "../../components/Filter/Filter";
 
 const Tweets = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,15 +34,19 @@ const Tweets = () => {
         setIsLoading(true);
 
         const storedUsers = await JSON.parse(localStorage.getItem("tweets"));
+
         if (storedUsers && page === prevPage) {
           localStorage.setItem("page", JSON.stringify(page));
           localStorage.setItem("prevPage", JSON.stringify(prevPage));
           return;
         }
+
         const data = await getTweets(page);
+
         const tweetFolow = await data.map((item) => {
           return { ...item, following: false };
         });
+
         setTweetItems((prev) => {
           return page === 1 ? [...tweetFolow] : [...prev, ...tweetFolow];
         });
@@ -56,6 +60,7 @@ const Tweets = () => {
         localStorage.setItem("prevPage", JSON.stringify(prevPage));
       }
     };
+
     renderTwetsItem();
   }, [page, prevPage]);
 
@@ -83,6 +88,7 @@ const Tweets = () => {
         }
       }
     });
+
     setTweetItems(updatedTweets);
   };
 
@@ -91,17 +97,6 @@ const Tweets = () => {
     localStorage.setItem("page", JSON.stringify(page));
   };
 
-  const filteredTweets = (value) => {
-    if (value === "show all") {
-      return tweetItems;
-    }
-    if (value === "follow") {
-      return tweetItems.filter((tweet) => tweet.following === false);
-    }
-    if (value === "following") {
-      return tweetItems.filter((tweet) => tweet.following === true);
-    }
-  };
   const FilterTweets = useMemo(() => {
     switch (filter) {
       case "follow":
@@ -113,50 +108,47 @@ const Tweets = () => {
     }
   }, [tweetItems, filter]);
 
-  console.log(filteredTweets);
   return (
-    <>
-      <Section>
-        <GoHome to={"/"}>
-          <ArrowGoHome />
-          <SpanGoHome> Go Home</SpanGoHome>
-        </GoHome>
-        {error && <p>Somthing was wrong, try again later...</p>}
-        <Filter
-          value={filter}
-          onChange={(e) => {
-            setFilter(e.target.value);
-          }}
-        />
-        <TweetList>
-          {FilterTweets.length > 0 ? (
-            FilterTweets.map((item) => (
-              <TweetsItem
-                key={item.id}
-                tweet={item}
-                onClick={() => handleClickFollow(item.name)}
-              />
-            ))
-          ) : (
-            <p> You do not have ani tweets </p>
-          )}
-        </TweetList>
-
-        {tweetItems.length > 0 && (
-          <ContainerLoadMore>
-            <Button onClick={handleIncrementPage}>
-              {isLoading ? (
-                <>
-                  <Loader />
-                </>
-              ) : (
-                "Load More"
-              )}
-            </Button>
-          </ContainerLoadMore>
+    <Section>
+      <GoHome to={"/"}>
+        <ArrowGoHome />
+        <SpanGoHome> Go Home</SpanGoHome>
+      </GoHome>
+      {error && <p>Somthing was wrong, try again later...</p>}
+      <Filter
+        value={filter}
+        onChange={(e) => {
+          setFilter(e.target.value);
+        }}
+      />
+      <TweetList>
+        {FilterTweets.length > 0 ? (
+          FilterTweets.map((item) => (
+            <TweetsItem
+              key={item.id}
+              tweet={item}
+              onClick={() => handleClickFollow(item.name)}
+            />
+          ))
+        ) : (
+          <p> You do not have ani tweets </p>
         )}
-      </Section>
-    </>
+      </TweetList>
+
+      {tweetItems.length > 0 && (
+        <ContainerLoadMore>
+          <Button onClick={handleIncrementPage}>
+            {isLoading ? (
+              <>
+                <Loader />
+              </>
+            ) : (
+              "Load More"
+            )}
+          </Button>
+        </ContainerLoadMore>
+      )}
+    </Section>
   );
 };
 
